@@ -316,12 +316,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: lowercase REPO_OWNER
+        shell: bash
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+          echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+
       - name: Extract components metadata (tags, labels)
         id: meta-ort-minimal
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/ort-minimal
+            ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/ort-minimal
           tags: |
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=schedule,pattern=snapshot
@@ -344,12 +350,12 @@ jobs:
             ${{ steps.meta-ort-minimal.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-contexts: |
-            base=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/base:latest
-            nodejs=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/nodejs:latest
-            python=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/python:latest
-            rust=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/rust:latest
-            ruby=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/ruby:latest
-            golang=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/golang:latest
+            base=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/base:latest
+            nodejs=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/nodejs:latest
+            python=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/python:latest
+            rust=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/rust:latest
+            ruby=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/ruby:latest
+            golang=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/golang:latest
 
   # Full Runtime ORT image
   # ----------------------
@@ -386,12 +392,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: downcase REPO_OWNER
+        shell: bash
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+          echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
+
       - name: Extract components metadata (tags, labels)
         id: meta-ort
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/ort
+            ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/ort
           tags: |
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=schedule,pattern=snapshot
@@ -411,10 +423,10 @@ jobs:
             ${{ steps.meta-ort.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-contexts: |
-            minimal=docker-image://${{ env.REGISTRY }}/${{ github.repository_owner }}/ort-minimal:${{ env.ORT_VERSION }}
-            android=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/android:latest
-            swift=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/swift:latest
-            scala=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/scala:latest
-            dart=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/dart:latest
-            dotnet=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/dotnet:latest
-            haskell=docker-image://${{ env.REGISTRY }}/${{ github.repository }}/haskell:latest
+            minimal=docker-image://${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/ort-minimal:${{ env.ORT_VERSION }}
+            android=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/android:latest
+            swift=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/swift:latest
+            scala=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/scala:latest
+            dart=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/dart:latest
+            dotnet=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/dotnet:latest
+            haskell=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/haskell:latest

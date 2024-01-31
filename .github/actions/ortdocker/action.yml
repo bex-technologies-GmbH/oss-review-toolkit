@@ -80,13 +80,17 @@ runs:
         username: ${{ github.actor }}
         password: ${{ inputs.token }}
 
+    - name: downcase REPO
+      run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
     - name: Extract components metadata (tags, labels)
       if: steps.check_image.outputs.result != 'found'
       id: meta
       uses: docker/metadata-action@v5
       with:
         images: |
-          ${{ env.REGISTRY }}/${{ github.repository }}/${{ inputs.name }}
+          ${{ env.REGISTRY }}/${{ env.REPO }}/${{ inputs.name }}
         tags: |
           type=raw,value=${{ inputs.version }}
           type=raw,value=${{ steps.check_image.outputs.result }}

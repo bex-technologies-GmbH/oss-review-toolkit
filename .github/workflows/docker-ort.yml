@@ -122,26 +122,6 @@ jobs:
           build-args: |
             RUST_VERSION=${{ env.RUST_VERSION }}
 
-  ruby_image:
-    name: Ruby image
-    needs: [ base_image ]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout default branch
-        uses: actions/checkout@v4
-      - name: Set environment variables
-        run: |
-          cat .versions >> $GITHUB_ENV
-      - name: Build Ruby image
-        uses: ./.github/actions/ortdocker
-        with:
-          name: ruby
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: "${{ env.RUBY_VERSION }}"
-          build-args: |
-            RUBY_VERSION=${{ env.RUBY_VERSION }}
-            COCOAPODS_VERSION=${{ env.COCOAPODS_VERSION }}
-
   golang_image:
     name: Golang image
     needs: [ base_image ]
@@ -199,64 +179,6 @@ jobs:
           version: "${{ env.DART_VERSION }}"
           build-args: |
             DART_VERSION=${{ env.DART_VERSION }}
-
-  dotnet_image:
-    name: Dotnet image
-    needs: [ base_image ]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout default branch
-        uses: actions/checkout@v4
-      - name: Set environment variables
-        run: |
-          cat .versions >> $GITHUB_ENV
-      - name: Build Dotnet image
-        uses: ./.github/actions/ortdocker
-        with:
-          name: dotnet
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: "${{ env.DOTNET_VERSION }}"
-          build-args: |
-            DOTNET_VERSION=${{ env.DOTNET_VERSION }}
-            NUGET_INSPECTOR_VERSION=${{ env.NUGET_INSPECTOR_VERSION }}
-
-  haskell_image:
-    name: Haskell image
-    needs: [ base_image ]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout default branch
-        uses: actions/checkout@v4
-      - name: Set environment variables
-        run: |
-          cat .versions >> $GITHUB_ENV
-      - name: Build Haskell image
-        uses: ./.github/actions/ortdocker
-        with:
-          name: haskell
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: "${{ env.HASKELL_STACK_VERSION }}"
-          build-args: |
-            HASKELL_STACK_VERSION=${{ env.HASKELL_STACK_VERSION }}
-
-  scala_image:
-    name: Scala image
-    needs: [ base_image ]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout default branch
-        uses: actions/checkout@v4
-      - name: Set environment variables
-        run: |
-          cat .versions >> $GITHUB_ENV
-      - name: Build Scala image
-        uses: ./.github/actions/ortdocker
-        with:
-          name: scala
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: "${{ env.SBT_VERSION }}"
-          build-args: |
-            SBT_VERSION=${{ env.SBT_VERSION }}
 
   swift_image:
     name: Swift image
@@ -354,7 +276,6 @@ jobs:
             nodejs=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/nodejs:latest
             python=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/python:latest
             rust=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/rust:latest
-            ruby=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/ruby:latest
             golang=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/golang:latest
 
   # Full Runtime ORT image
@@ -426,7 +347,4 @@ jobs:
             minimal=docker-image://${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/ort-minimal:${{ env.ORT_VERSION }}
             android=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/android:latest
             swift=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/swift:latest
-            scala=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/scala:latest
             dart=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/dart:latest
-            dotnet=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/dotnet:latest
-            haskell=docker-image://${{ env.REGISTRY }}/${{ env.REPO }}/haskell:latest

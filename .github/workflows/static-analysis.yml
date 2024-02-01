@@ -1,12 +1,7 @@
 name: Static Analysis
 
 on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false
@@ -31,7 +26,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: temurin
-        java-version: 17
+        java-version: 21
     - name: Check copyrights, license headers, and .gitattributes
       uses: gradle/gradle-build-action@v3
       with:

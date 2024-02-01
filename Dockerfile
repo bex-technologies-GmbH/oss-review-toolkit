@@ -448,11 +448,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 RUN syft / --exclude '*/usr/share/doc' --exclude '*/etc' -o spdx-json --file /usr/share/doc/ort/ort-base.spdx.json
 
-# Python
-ENV PYENV_ROOT=/opt/python
-ENV PATH=$PATH:$PYENV_ROOT/shims:$PYENV_ROOT/bin
-COPY --from=python --chown=$USER:$USER $PYENV_ROOT $PYENV_ROOT
-RUN syft $PYENV_ROOT -o spdx-json --file /usr/share/doc/ort/ort-python.spdx.json
 
 # NodeJS
 ARG NODEJS_VERSION=20.9.0
@@ -461,26 +456,10 @@ ENV PATH=$PATH:$NVM_DIR/versions/node/v$NODEJS_VERSION/bin
 COPY --from=nodejs --chown=$USER:$USER $NVM_DIR $NVM_DIR
 RUN syft $NVM_DIR  -o spdx-json --file /usr/share/doc/ort/ort-nodejs.spdx.json
 
-# Rust
-ENV RUST_HOME=/opt/rust
-ENV CARGO_HOME=$RUST_HOME/cargo
-ENV RUSTUP_HOME=$RUST_HOME/rustup
-ENV PATH=$PATH:$CARGO_HOME/bin:$RUSTUP_HOME/bin
-COPY --from=rust --chown=$USER:$USER $RUST_HOME $RUST_HOME
-RUN chmod o+rwx $CARGO_HOME
-RUN syft $RUST_HOME -o spdx-json --file /usr/share/doc/ort/ort-rust.spdx.json
-
 # Golang
 ENV PATH=$PATH:/opt/go/bin
 COPY --from=golang --chown=$USER:$USER /opt/go /opt/go
 RUN syft /opt/go -o spdx-json --file /usr/share/doc/ort/ort-golang.spdx.json
-
-# Ruby
-ENV RBENV_ROOT=/opt/rbenv/
-ENV GEM_HOME=/var/tmp/gem
-ENV PATH=$PATH:$RBENV_ROOT/bin:$RBENV_ROOT/shims:$RBENV_ROOT/plugins/ruby-install/bin
-COPY --from=ruby --chown=$USER:$USER $RBENV_ROOT $RBENV_ROOT
-RUN syft $RBENV_ROOT -o spdx-json --file /usr/share/doc/ort/ort-ruby.spdx.json
 
 # ORT
 COPY --from=ortbin --chown=$USER:$USER /opt/ort /opt/ort
@@ -515,52 +494,9 @@ COPY --from=swift --chown=$USER:$USER $SWIFT_HOME $SWIFT_HOME
 
 RUN syft $SWIFT_HOME -o spdx-json --file /usr/share/doc/ort/ort-swift.spdx.json
 
-
-# Scala
-ENV SBT_HOME=/opt/sbt
-ENV PATH=$PATH:$SBT_HOME/bin
-COPY --from=scala --chown=$USER:$USER $SBT_HOME $SBT_HOME
-
-RUN syft $SBT_HOME -o spdx-json --file /usr/share/doc/ort/ort-sbt.spdx.json
-
 # Dart
 ENV DART_SDK=/opt/dart-sdk
 ENV PATH=$PATH:$DART_SDK/bin
 COPY --from=dart --chown=$USER:$USER $DART_SDK $DART_SDK
 
 RUN syft $DART_SDK -o spdx-json --file /usr/share/doc/ort/ort-golang.dart.json
-
-# Dotnet
-ENV DOTNET_HOME=/opt/dotnet
-ENV NUGET_INSPECTOR_HOME=$DOTNET_HOME
-ENV PATH=$PATH:$DOTNET_HOME:$DOTNET_HOME/tools:$DOTNET_HOME/bin
-
-COPY --from=dotnet --chown=$USER:$USER $DOTNET_HOME $DOTNET_HOME
-
-RUN syft $DOTNET_HOME -o spdx-json --file /usr/share/doc/ort/ort-dotnet.spdx.json
-
-# PHP
-ARG PHP_VERSION=8.1
-ARG COMPOSER_VERSION=2.2
-
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    sudo apt-get update && \
-    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends \
-    php${PHP_VERSION} \
-    && sudo rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /opt/php/bin \
-    && curl -ksS https://getcomposer.org/installer | php -- --install-dir=/opt/php/bin --filename=composer --$COMPOSER_VERSION
-
-ENV PATH=$PATH:/opt/php/bin
-
-RUN syft /opt/php -o spdx-json --file /usr/share/doc/ort/ort-php.spdx.json
-
-# Haskell
-ENV HASKELL_HOME=/opt/haskell
-ENV PATH=$PATH:$HASKELL_HOME/bin
-
-COPY --from=haskell /opt/haskell /opt/haskell
-
-RUN syft /opt/haskell -o spdx-json --file /usr/share/doc/ort/ort-haskell.spdx.json

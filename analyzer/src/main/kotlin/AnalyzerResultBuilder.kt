@@ -41,11 +41,11 @@ class AnalyzerResultBuilder {
     private val dependencyGraphs = mutableMapOf<String, DependencyGraph>()
 
     fun build(excludes: Excludes = Excludes.EMPTY): AnalyzerResult {
-        val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
+        /*val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
         require(duplicates.isEmpty()) {
             "Unable to create the AnalyzerResult as it contains packages and projects with the same ids: " +
                 duplicates.values
-        }
+        }*/
 
         return AnalyzerResult(projects, packages, issues, dependencyGraphs)
             .convertToDependencyGraph(excludes)

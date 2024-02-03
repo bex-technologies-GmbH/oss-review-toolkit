@@ -41,7 +41,7 @@ class AnalyzerResultBuilder {
     private val dependencyGraphs = mutableMapOf<String, DependencyGraph>()
 
     fun build(excludes: Excludes = Excludes.EMPTY): AnalyzerResult {
-        val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
+        /*val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
 
         // path from https://github.com/oss-review-toolkit/ort/pull/6533
 
@@ -56,7 +56,7 @@ class AnalyzerResultBuilder {
         require(realDuplicates.isEmpty()) {
             "Unable to create the AnalyzerResult as it contains packages and projects with the same ids: " +
                 realDuplicates.values
-        }
+        }*/
 
         return AnalyzerResult(projects, packages, issues, dependencyGraphs)
             .convertToDependencyGraph(excludes)

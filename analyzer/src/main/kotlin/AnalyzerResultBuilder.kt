@@ -41,8 +41,13 @@ class AnalyzerResultBuilder {
     private val dependencyGraphs = mutableMapOf<String, DependencyGraph>()
 
     fun build(excludes: Excludes = Excludes.EMPTY): AnalyzerResult {
-        /*val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
+        val duplicates = (projects.map { it.toPackage() } + packages).getDuplicates { it.id }
 
+        // remove duplicates from projects and packages
+        val projects = projects.filter { project -> duplicates.none { it.key == project.id } }.toSet()
+        val packages = packages.filter { pkg -> duplicates.none { it.key == pkg.id } }.toSet()
+
+        /*
         // path from https://github.com/oss-review-toolkit/ort/pull/6533
 
         // Some source code repositories contain projects that are used as packages by other contained projects. So the
